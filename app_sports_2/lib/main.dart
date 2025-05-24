@@ -1,11 +1,15 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'services/firebase_options.dart';
 
-
+// Importación de páginas
+import 'pages/login_page.dart';
+import 'pages/alumnos_page.dart';
+import 'pages/deportes_page.dart';
+import 'pages/divisiones_page.dart';
+import 'pages/estadisticas_page.dart';
+import 'pages/registros_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,42 +19,34 @@ void main() async {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
+      create: (_) => MyAppState(),
       child: MaterialApp(
-        title: 'Namer App',
+        debugShowCheckedModeBanner: false,
+        title: 'Entrenador Deportivo',
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
-        home: MyHomePage(),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const LoginPage(),
+          //'/alumnos': (context) => const AlumnosPage(),
+          //'/deportes': (context) => const DeportesPage(),
+          //'/divisiones': (context) => const DivisionesPage(),
+          //'/estadisticas': (context) => const EstadisticasPage(),
+          //'/registros': (context) => const RegistrosPage(),
+        },
       ),
     );
   }
 }
 
 class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
-}
-
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-
-    return Scaffold(
-      body: Column(
-        children: [
-          Text('A random idea:'),
-          Text(appState.current.asLowerCase),
-        ],
-      ),
-    );
-  }
+  // Aquí podés guardar estados globales de tu aplicación si lo necesitás
 }
