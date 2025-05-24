@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "365840657140",
+    "project_id": "sportsevolution-c5c4d",
+    "storage_bucket": "sportsevolution-c5c4d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365840657140:android:1288adb533b6072c42cca1",
+        "android_client_info": {
+          "package_name": "com.example.app_sports_2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0ppbB7l8mzR7e--SX0AKA_9xuIXMD6_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
