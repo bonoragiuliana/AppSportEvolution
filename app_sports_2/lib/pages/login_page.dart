@@ -22,7 +22,7 @@ class LoginPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 34,
                   fontWeight: FontWeight.bold,
-                  color: Colors.deepOrangeAccent,
+                  color: Colors.orange,
                 ),
               ),
               const SizedBox(height: 30),
@@ -57,7 +57,7 @@ class LoginPage extends StatelessWidget {
                             providers: providers,
                             actions: [
                               AuthStateChangeAction<SignedIn>((context, state) {
-                                Navigator.pushReplacementNamed(context, '/inicio');
+                                Navigator.pushReplacementNamed(context, '/deportes');
                               }),
                             ],
                             headerBuilder: (context, constraints, _) {
@@ -74,7 +74,7 @@ class LoginPage extends StatelessWidget {
                                 padding: EdgeInsets.only(bottom: 8.0),
                                 child: Text(
                                   'Iniciá sesión para continuar',
-                                  style: TextStyle(color: Colors.deepOrangeAccent),
+                                  style: TextStyle(color: Colors.orange),
                                 ),
                               );
                             },
@@ -122,7 +122,7 @@ class LoginPage extends StatelessWidget {
                             providers: providers,
                             actions: [
                               AuthStateChangeAction<UserCreated>((context, state) {
-                                Navigator.pushReplacementNamed(context, '/inicio');
+                                Navigator.pushReplacementNamed(context, '/deportes');
                               }),
                             ],
                           ),
@@ -143,12 +143,12 @@ class LoginPage extends StatelessWidget {
   ButtonStyle _buttonStyle() {
     return ElevatedButton.styleFrom(
       backgroundColor: Colors.black,
-      foregroundColor: Colors.deepOrangeAccent,
+      foregroundColor: Colors.orange,
       padding: const EdgeInsets.symmetric(vertical: 16),
       textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: Colors.deepOrangeAccent),
+        side: const BorderSide(color: Colors.orange),
       ),
     );
   }
