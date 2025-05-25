@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'services/firebase_options.dart';
 
-// Importación de páginas
+
 import 'pages/login_page.dart';
 import 'pages/alumnos_page.dart';
 import 'pages/deportes_page.dart';
@@ -36,11 +36,14 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => const LoginPage(),
-          //'/alumnos': (context) => const AlumnosPage(),
-          //'/deportes': (context) => const DeportesPage(),
-          //'/divisiones': (context) => const DivisionesPage(),
+          '/deportes': (context) => const DeportesPage(),
+          '/divisiones': (context) => const DivisionesPage(),
+          '/alumnos': (context) => const AlumnosPage(),
+          
           //'/estadisticas': (context) => const EstadisticasPage(),
           //'/registros': (context) => const RegistrosPage(),
+          
+          
         },
       ),
     );
