@@ -1,3 +1,16 @@
+buildscript {
+  repositories {
+    google()         // <-- aquí
+    mavenCentral()   // <-- y aquí
+  }
+  dependencies {
+    // ahora ya puede resolver el plugin de Android
+    classpath("com.android.tools.build:gradle:8.1.1")
+    // y si usas Kotlin:
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20")
+  }
+}
+
 allprojects {
     repositories {
         google()

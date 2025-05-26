@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_sports_2/services/auth_service.dart';
 
 class AlumnosPage extends StatefulWidget {
   const AlumnosPage({super.key});
@@ -66,20 +67,33 @@ class _AlumnosPageState extends State<AlumnosPage> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/registros',
+                            arguments: {
+                              'sport': sportName,
+                              'division': divisionName,
+                              'player': alumno,
+                            },
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF0F0F1A),
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
-                            side: const BorderSide(color: Colors.orange, width: 2),
+                            side: const BorderSide(
+                                color: Colors.orange, width: 2),
                           ),
                           elevation: 5,
                         ),
                         child: Text(
                           alumno,
-                          style: const TextStyle(fontSize: 18, color: Colors.white),
+                          style: const TextStyle(
+                              fontSize: 18, color: Colors.white),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -97,10 +111,12 @@ class _AlumnosPageState extends State<AlumnosPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF0F0F1A),
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(color: Colors.orange, width: 2),
+                                side: const BorderSide(
+                                    color: Colors.orange, width: 2),
                               ),
                               elevation: 5,
                             ),
@@ -108,7 +124,8 @@ class _AlumnosPageState extends State<AlumnosPage> {
                               controller: _nuevoAlumnoController,
                               autofocus: true,
                               onSubmitted: (_) => _agregarAlumnoSiNoVacio(),
-                              style: const TextStyle(fontSize: 18, color: Colors.white),
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.white),
                               textAlign: TextAlign.center,
                               decoration: const InputDecoration(
                                 hintText: 'Escribe el nombre del alumno',
@@ -130,7 +147,8 @@ class _AlumnosPageState extends State<AlumnosPage> {
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(color: Colors.orange, width: 2),
+                                side: const BorderSide(
+                                    color: Colors.orange, width: 2),
                               ),
                               elevation: 5,
                             ),
@@ -146,8 +164,34 @@ class _AlumnosPageState extends State<AlumnosPage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFF1A1A2E),
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.orange,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Deportes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.logout),
+            label: 'Cerrar sesión',
+          ),
+        ],
+        onTap: (idx) async {
+          if (idx == 0) {
+            // pop hasta la ruta de deportes para **preservar** la lista
+            Navigator.popUntil(context, ModalRoute.withName('/deportes'));
+          } else {
+            await AuthService().signOut();
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/login_page',
+              (route) => false,
+            );
+          }
+        },
+      ),
     );
   }
 }
-
-

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'services/firebase_options.dart';
 
-
 import 'pages/login_page.dart';
 import 'pages/alumnos_page.dart';
 import 'pages/deportes_page.dart';
@@ -33,17 +32,22 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
-        initialRoute: '/',
+        initialRoute: '/login_page',
         routes: {
-          '/': (context) => const LoginPage(),
-          '/deportes': (context) => const DeportesPage(),
-          '/divisiones': (context) => const DivisionesPage(),
-          '/alumnos': (context) => const AlumnosPage(),
-          
-          //'/estadisticas': (context) => const EstadisticasPage(),
-          //'/registros': (context) => const RegistrosPage(),
-          
-          
+          '/login_page': (ctx) => const LoginPage(),
+          '/deportes': (ctx) => const DeportesPage(),
+          '/divisiones': (ctx) => const DivisionesPage(),
+          '/alumnos': (ctx) => const AlumnosPage(),
+          '/registros': (ctx) => const RegistrosPage(),
+          '/estadisticas': (ctx) {
+            final args =
+                ModalRoute.of(ctx)!.settings.arguments as Map<String, String>;
+            return EstadisticasPage(
+              sportId: args['sport']!,
+              divisionId: args['division']!,
+              playerId: args['player']!,
+            );
+          },
         },
       ),
     );

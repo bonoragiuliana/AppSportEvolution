@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 class LoginPage extends StatelessWidget {
@@ -57,7 +56,8 @@ class LoginPage extends StatelessWidget {
                             providers: providers,
                             actions: [
                               AuthStateChangeAction<SignedIn>((context, state) {
-                                Navigator.pushReplacementNamed(context, '/deportes');
+                                Navigator.pushReplacementNamed(
+                                    context, '/deportes');
                               }),
                             ],
                             headerBuilder: (context, constraints, _) {
@@ -121,8 +121,10 @@ class LoginPage extends StatelessWidget {
                           child: RegisterScreen(
                             providers: providers,
                             actions: [
-                              AuthStateChangeAction<UserCreated>((context, state) {
-                                Navigator.pushReplacementNamed(context, '/deportes');
+                              AuthStateChangeAction<UserCreated>(
+                                  (context, state) {
+                                Navigator.pushReplacementNamed(
+                                    context, '/deportes');
                               }),
                             ],
                           ),

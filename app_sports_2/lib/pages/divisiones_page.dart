@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_sports_2/services/auth_service.dart';
 
 class DivisionesPage extends StatefulWidget {
   const DivisionesPage({super.key});
@@ -34,7 +35,8 @@ class _DivisionesPageState extends State<DivisionesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String sportName = ModalRoute.of(context)!.settings.arguments as String;
+    final String sportName =
+        ModalRoute.of(context)!.settings.arguments as String;
 
     return Scaffold(
       appBar: AppBar(
@@ -80,16 +82,19 @@ class _DivisionesPageState extends State<DivisionesPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF0F0F1A),
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
-                            side: const BorderSide(color: Colors.orange, width: 2),
+                            side: const BorderSide(
+                                color: Colors.orange, width: 2),
                           ),
                           elevation: 5,
                         ),
                         child: Text(
                           controller.text,
-                          style: const TextStyle(fontSize: 18, color: Colors.white),
+                          style: const TextStyle(
+                              fontSize: 18, color: Colors.white),
                         ),
                       ),
                     );
@@ -108,17 +113,21 @@ class _DivisionesPageState extends State<DivisionesPage> {
                               hintStyle: const TextStyle(color: Colors.white54),
                               filled: true,
                               fillColor: const Color(0xFF0F0F1A),
-                              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 20),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(color: Colors.orange, width: 2),
+                                borderSide: const BorderSide(
+                                    color: Colors.orange, width: 2),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(color: Colors.orangeAccent, width: 2),
+                                borderSide: const BorderSide(
+                                    color: Colors.orangeAccent, width: 2),
                               ),
                               suffixIcon: IconButton(
-                                icon: const Icon(Icons.check, color: Colors.orange),
+                                icon: const Icon(Icons.check,
+                                    color: Colors.orange),
                                 onPressed: _agregarDivision,
                               ),
                             ),
@@ -136,11 +145,13 @@ class _DivisionesPageState extends State<DivisionesPage> {
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(color: Colors.orange, width: 2),
+                                side: const BorderSide(
+                                    color: Colors.orange, width: 2),
                               ),
                               elevation: 5,
                             ),
-                            child: const Text('Add Division...', style: TextStyle(fontSize: 18)),
+                            child: const Text('Add Division...',
+                                style: TextStyle(fontSize: 18)),
                           ),
                   ),
                 ],
@@ -148,6 +159,29 @@ class _DivisionesPageState extends State<DivisionesPage> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Deportes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.logout),
+            label: 'Cerrar sesión',
+          ),
+        ],
+        onTap: (idx) async {
+          if (idx == 0) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/deportes', (route) => false);
+          } else {
+            // cerrar sesión en Firebase
+            await AuthService().signOut();
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/login_page', (route) => false);
+          }
+        },
       ),
     );
   }

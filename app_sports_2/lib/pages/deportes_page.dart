@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_sports_2/services/auth_service.dart';
 
 class DeportesPage extends StatefulWidget {
   const DeportesPage({super.key});
@@ -75,11 +76,13 @@ class _DeportesPageState extends State<DeportesPage> {
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
-                            side: const BorderSide(color: Colors.orange, width: 2),
+                            side: const BorderSide(
+                                color: Colors.orange, width: 2),
                           ),
                           elevation: 5,
                         ),
-                        child: Text(deporte, style: const TextStyle(fontSize: 18)),
+                        child:
+                            Text(deporte, style: const TextStyle(fontSize: 18)),
                       ),
                     );
                   }),
@@ -97,17 +100,21 @@ class _DeportesPageState extends State<DeportesPage> {
                               hintStyle: const TextStyle(color: Colors.white54),
                               filled: true,
                               fillColor: const Color(0xFF0F0F1A),
-                              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 20),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(color: Colors.orange, width: 2),
+                                borderSide: const BorderSide(
+                                    color: Colors.orange, width: 2),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(color: Colors.orangeAccent, width: 2),
+                                borderSide: const BorderSide(
+                                    color: Colors.orangeAccent, width: 2),
                               ),
                               suffixIcon: IconButton(
-                                icon: const Icon(Icons.check, color: Colors.orange),
+                                icon: const Icon(Icons.check,
+                                    color: Colors.orange),
                                 onPressed: _agregarDeporte,
                               ),
                             ),
@@ -125,11 +132,13 @@ class _DeportesPageState extends State<DeportesPage> {
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(color: Colors.orange, width: 2),
+                                side: const BorderSide(
+                                    color: Colors.orange, width: 2),
                               ),
                               elevation: 5,
                             ),
-                            child: const Text('Add...', style: TextStyle(fontSize: 18)),
+                            child: const Text('Add...',
+                                style: TextStyle(fontSize: 18)),
                           ),
                   ),
                 ],
@@ -138,7 +147,34 @@ class _DeportesPageState extends State<DeportesPage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFF1A1A2E),
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.orange,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Deportes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.logout),
+            label: 'Cerrar sesión',
+          ),
+        ],
+        onTap: (idx) async {
+          if (idx == 0) {
+            // pop hasta la ruta de deportes para **preservar** la lista
+            Navigator.popUntil(context, ModalRoute.withName('/deportes'));
+          } else {
+            await AuthService().signOut();
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/login_page',
+              (route) => false,
+            );
+          }
+        },
+      ),
     );
   }
 }
-
