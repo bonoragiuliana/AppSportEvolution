@@ -1,164 +1,128 @@
 import 'package:flutter/material.dart';
 import 'package:app_sports_2/services/auth_service.dart';
+import 'package:app_sports_2/services/db_services.dart';
 
 class AlumnosPage extends StatefulWidget {
-  const AlumnosPage({super.key});
+  const AlumnosPage({Key? key}) : super(key: key);
 
   @override
   State<AlumnosPage> createState() => _AlumnosPageState();
 }
 
 class _AlumnosPageState extends State<AlumnosPage> {
-  List<String> _alumnos = []; // Empezar vacío
-  TextEditingController _nuevoAlumnoController = TextEditingController();
-  bool _mostrandoCampoNuevo = false;
+  final _nuevoCtrl = TextEditingController();
+  bool _agregando = false;
 
   @override
   void dispose() {
-    _nuevoAlumnoController.dispose();
+    _nuevoCtrl.dispose();
     super.dispose();
   }
 
-  void _agregarAlumnoSiNoVacio() {
-    final nuevoNombre = _nuevoAlumnoController.text.trim();
-    if (nuevoNombre.isNotEmpty) {
-      setState(() {
-        _alumnos.insert(0, nuevoNombre); // Agrega arriba
-        _nuevoAlumnoController.clear();
-        _mostrandoCampoNuevo = false;
-      });
+  Future<void> _agregaAlumno(String sport, String division) async {
+    final txt = _nuevoCtrl.text.trim();
+    if (txt.isNotEmpty) {
+      await DbService().addPlayer(sport, division, txt);
+      _nuevoCtrl.clear();
+      setState(() => _agregando = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, String> args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    final String sportName = args['sport']!;
-    final String divisionName = args['division']!;
+    final args     = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    final sport    = args['sport']!;
+    final division = args['division']!;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Alumnos de $sportName - $divisionName'),
+        title: Text('Alumnos de $sport → $division'),
         backgroundColor: const Color(0xFF1A1A2E),
         foregroundColor: Colors.orange,
       ),
       backgroundColor: const Color(0xFF0F0F1A),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Alumnos en $divisionName de $sportName',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
             Expanded(
-              child: ListView(
-                children: [
-                  // Lista de alumnos
-                  ..._alumnos.map((alumno) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/registros',
-                            arguments: {
-                              'sport': sportName,
-                              'division': divisionName,
-                              'player': alumno,
-                            },
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF0F0F1A),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: const BorderSide(
-                                color: Colors.orange, width: 2),
-                          ),
-                          elevation: 5,
-                        ),
-                        child: Text(
-                          alumno,
-                          style: const TextStyle(
-                              fontSize: 18, color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-
-                  const SizedBox(height: 8),
-
-                  // Botón "Add Student..." que se convierte en campo de texto
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: _mostrandoCampoNuevo
-                        ? ElevatedButton(
-                            onPressed: () {},
+              child: StreamBuilder<List<String>>(
+                stream: DbService().streamPlayers(sport, division),
+                builder: (ctx, snap) {
+                  if (!snap.hasData) return const Center(child: CircularProgressIndicator());
+                  final alumnos = snap.data!;
+                  return ListView(
+                    children: [
+                      for (var alumno in alumnos) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: ElevatedButton(
+                            onPressed: () => Navigator.pushNamed(
+                              context, '/registros',
+                              arguments: {
+                                'sport': sport,
+                                'division': division,
+                                'player': alumno
+                              },
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF0F0F1A),
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(
-                                    color: Colors.orange, width: 2),
+                                side: const BorderSide(color: Colors.orange, width: 2),
                               ),
                               elevation: 5,
                             ),
-                            child: TextField(
-                              controller: _nuevoAlumnoController,
-                              autofocus: true,
-                              onSubmitted: (_) => _agregarAlumnoSiNoVacio(),
-                              style: const TextStyle(
-                                  fontSize: 18, color: Colors.white),
-                              textAlign: TextAlign.center,
-                              decoration: const InputDecoration(
-                                hintText: 'Escribe el nombre del alumno',
-                                hintStyle: TextStyle(color: Colors.white54),
-                                border: InputBorder.none,
-                              ),
-                              cursorColor: Colors.orange,
+                            child: Text(alumno, style: const TextStyle(fontSize: 18, color: Colors.white)),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 12),
+                      if (_agregando)
+                        TextField(
+                          controller: _nuevoCtrl,
+                          autofocus: true,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: 'Nombre del alumno',
+                            hintStyle: const TextStyle(color: Colors.white54),
+                            filled: true,
+                            fillColor: const Color(0xFF1A1A2E),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.orange, width: 2),
                             ),
-                          )
-                        : ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                _mostrandoCampoNuevo = true;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF0F0F1A),
-                              foregroundColor: Colors.orange,
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(
-                                    color: Colors.orange, width: 2),
-                              ),
-                              elevation: 5,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.orange, width: 2),
                             ),
-                            child: const Text(
-                              'Add Student...',
-                              style: TextStyle(fontSize: 18),
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.check, color: Colors.orange),
+                              onPressed: () => _agregaAlumno(sport, division),
                             ),
                           ),
-                  ),
-                ],
+                          onSubmitted: (_) => _agregaAlumno(sport, division),
+                        )
+                      else
+                        ElevatedButton.icon(
+                          onPressed: () => setState(() => _agregando = true),
+                          icon: const Icon(Icons.add, color: Colors.orange),
+                          label: const Text(
+                            'Añadir alumno',
+                            style: TextStyle(color: Colors.orange, fontSize: 16),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF0F0F1A),
+                            side: const BorderSide(color: Colors.orange, width: 2),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
             ),
           ],
@@ -169,26 +133,15 @@ class _AlumnosPageState extends State<AlumnosPage> {
         selectedItemColor: Colors.orange,
         unselectedItemColor: Colors.orange,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Deportes',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.logout),
-            label: 'Cerrar sesión',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Deportes'),
+          BottomNavigationBarItem(icon: Icon(Icons.logout), label: 'Cerrar sesión'),
         ],
-        onTap: (idx) async {
-          if (idx == 0) {
-            // pop hasta la ruta de deportes para **preservar** la lista
+        onTap: (i) async {
+          if (i == 0) {
             Navigator.popUntil(context, ModalRoute.withName('/deportes'));
           } else {
             await AuthService().signOut();
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/login_page',
-              (route) => false,
-            );
+            Navigator.pushNamedAndRemoveUntil(context, '/login_page', (_) => false);
           }
         },
       ),

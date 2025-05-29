@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'services/firebase_options.dart';
-
+import 'package:app_sports_2/pages/database_page.dart';
 import 'pages/login_page.dart';
 import 'pages/alumnos_page.dart';
 import 'pages/deportes_page.dart';
@@ -39,15 +39,8 @@ class MyApp extends StatelessWidget {
           '/divisiones': (ctx) => const DivisionesPage(),
           '/alumnos': (ctx) => const AlumnosPage(),
           '/registros': (ctx) => const RegistrosPage(),
-          '/estadisticas': (ctx) {
-            final args =
-                ModalRoute.of(ctx)!.settings.arguments as Map<String, String>;
-            return EstadisticasPage(
-              sportId: args['sport']!,
-              divisionId: args['division']!,
-              playerId: args['player']!,
-            );
-          },
+          '/estadisticas': (ctx) => const EstadisticasPage(),
+          '/database':     (_) => const DatabasePage()
         },
       ),
     );
